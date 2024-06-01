@@ -1,6 +1,9 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from .models import Schools, UploadFileForm
+from django.templatetags.static import static
+from django.contrib.staticfiles.storage import staticfiles_storage
+
+from .models import School
 import csv
 
 # Create your views here.
@@ -8,28 +11,21 @@ def index(request):
     return render(request, 'index.html')
 
 def upload_file(request):
-    if request.method == "POST":
-        form = UploadFileForm(request.POST, request.FILES)
-        if form.is_valid():
-            handle_uploaded_file(request.FILES["file"])
-            return HttpResponseRedirect("data/")
-    else:
-        form = UploadFileForm()
-    return render(request, "upload.html", {"form": form})
+    with open (staticfiles_storage.path('dataset.csv'), 'r') as file:
+        reader = csv.reader(file)
+        reader.__next__()
+        for row in reader:
+            School.objects.create(
+                 DBN = row[0],
+                 School_Name = row[1],
+                 Number_of_Test_Takers = row[2],
+                 Critical_Reading_Mean = row[3],
+                 Mathematics_Mean = row[4],
+                 Writing_Mean = row[5],
+                 )
+    return HttpResponseRedirect('data/')
 
-def handle_uploaded_file(file):
-    reader = csv.reader(file)
-    next(reader)
-    for column in reader:
-        Schools.objects.create(
-            DBN = column[0],
-            School_Name = column[1],
-            Number_of_Test_Takers = column[2],
-            Critical_Reading_Mean = column[3],
-            Mathematics_Mean = column[4],
-            Writing_Mean = column[5],
-            )
 
 def view_data(request):
-    data = Schools.objects.all()
-    return render(request, 'data.html', {'sat_data': data})
+    data = School.objects.all()
+    return render(request, 'data.html', {'data': data })
