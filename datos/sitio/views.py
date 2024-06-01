@@ -56,17 +56,7 @@ def view_data(request):
     school_namesm = [school.School_Name for school in top10_reading]
     math_means = [school.Critical_Reading_Mean for school in top10_reading]
     plt.figure(figsize=(10, 6))
-    plt.barh(school_namesm, math_means, color='lighseagreen')
-    plt.xlabel('Critical Reading Mean Score')
-    plt.title('Top 10 Schools by Critical Reading Mean Score')
-    plt.gca().invert_yaxis()
-    plt.savefig('top10reading.png')
-
-    top10_reading = data.order_by('-Critical_Reading_Mean')[:10]
-    school_namesr = [school.School_Name for school in top10_reading]
-    reading_means = [school.Critical_Reading_Mean for school in top10_reading]
-    plt.figure(figsize=(10, 6))
-    plt.barh(school_namesr, reading_means, color='lighseagreen')
+    plt.barh(school_namesm, math_means, color='crimson')
     plt.xlabel('Critical Reading Mean Score')
     plt.title('Top 10 Schools by Critical Reading Mean Score')
     plt.gca().invert_yaxis()
@@ -78,8 +68,8 @@ def view_data(request):
     plt.figure(figsize=(10, 6))
     plt.barh(school_namesw, writing_means, color='skyblue')
     plt.xlabel('Critical Reading Mean Score')
-    plt.title('Top 10 Schools by Critical Reading Mean Score')
+    plt.title('Top 10 Schools by Writing Mean Score')
     plt.gca().invert_yaxis()
-    plt.savefig('top10reading.png')
+    plt.savefig('top10writing.png')
 
     return render(request, 'data.html', {'data': data })
