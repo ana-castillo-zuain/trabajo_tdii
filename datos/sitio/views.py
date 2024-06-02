@@ -24,6 +24,12 @@ def upload_file(request):
                  Mathematics_Mean = row[4],
                  Writing_Mean = row[5],
                  )
+            School.objects.annotate(
+                Average_Score=ExpressionWrapper(
+                (F('Critical_Reading_Mean')+F('Mathematics_Mean')+F('Writing_Mean'))
+                /3.00, output_field=FloatField()
+                )
+            )
     return HttpResponseRedirect('data/')
 
 
