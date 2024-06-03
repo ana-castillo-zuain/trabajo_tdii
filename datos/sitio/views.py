@@ -1,11 +1,11 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.templatetags.static import static
 from django.contrib.staticfiles.storage import staticfiles_storage
-from django.db.models import F, ExpressionWrapper, FloatField
+from django.conf import settings
 from .models import School
 import csv
 import matplotlib.pyplot as plt 
+import os
 
 # Create your views here.
 def index(request):
@@ -16,31 +16,25 @@ def upload_file(request):
         reader = csv.reader(file)
         reader.__next__()
         for row in reader:
+            number_of_test_takers = int(row[2])
+            critical_reading_mean = int(row[3])
+            mathematics_mean = int(row[4])
+            writing_mean = int(row[5])
+            average_score = (critical_reading_mean + mathematics_mean + writing_mean) / 3
             School.objects.create(
-                 DBN = row[0],
-                 School_Name = row[1],
-                 Number_of_Test_Takers = row[2],
-                 Critical_Reading_Mean = row[3],
-                 Mathematics_Mean = row[4],
-                 Writing_Mean = row[5],
-                 )
-            School.objects.annotate(
-                Average_Score=ExpressionWrapper(
-                (F('Critical_Reading_Mean')+F('Mathematics_Mean')+F('Writing_Mean'))
-                /3.00, output_field=FloatField()
-                )
+                DBN=row[0],
+                School_Name=row[1],
+                Number_of_Test_Takers=number_of_test_takers,
+                Critical_Reading_Mean=critical_reading_mean,
+                Mathematics_Mean=mathematics_mean,
+                Writing_Mean=writing_mean,
+                Average_Score=average_score
             )
     return HttpResponseRedirect('data/')
 
 
 def view_data(request):
     data = School.objects.all()
-    # School.objects.annotate(
-    #     Average_Score=ExpressionWrapper(
-    #         (F('Critical_Reading_Mean')+F('Mathematics_Mean')+F('Writing_Mean'))
-    #         /3.00, output_field=FloatField()
-    #         )
-    #     )
     # names = [data.School_Name for data in data]
     # students = [data.Number_of_Test_Takers for data in data]
     # reading = [data.Critical_Reading_Mean for data in data]
@@ -48,6 +42,11 @@ def view_data(request):
     # writing = [data.Writing_Mean for data in data]
     # avg = [data.Average_Score for data in data]
     sample_schools = data[:10]
+
+    static_dir = os.path.join(settings.STATICFILES_DIRS[0], 'images')
+    if not os.path.exists(static_dir):
+        os.makedirs(static_dir)
+
     top10_maths = data.order_by('-Mathematics_Mean')[:10]
     school_names = [school.School_Name for school in top10_maths]
     math_means = [school.Mathematics_Mean for school in top10_maths]
@@ -56,7 +55,9 @@ def view_data(request):
     plt.xlabel('Mathematics Mean Score')
     plt.title('Top 10 Schools by Mathematics Mean Score')
     plt.gca().invert_yaxis()
-    plt.savefig('top10maths.png')
+    math_image_path = os.path.join(static_dir, 'top10maths.png')
+    plt.savefig(math_image_path)
+    plt.close()
 
     top10_reading = data.order_by('-Critical_Reading_Mean')[:10]
     school_namesm = [school.School_Name for school in top10_reading]
@@ -66,7 +67,9 @@ def view_data(request):
     plt.xlabel('Critical Reading Mean Score')
     plt.title('Top 10 Schools by Critical Reading Mean Score')
     plt.gca().invert_yaxis()
-    plt.savefig('top10reading.png')
+    math_image_path = os.path.join(static_dir, 'top10maths.png')
+    plt.savefig(math_image_path)
+    plt.close()
 
     top10_writing = data.order_by('-Writing_Means')[:10]
     school_namesw = [school.School_Name for school in top10_writing]
@@ -76,6 +79,15 @@ def view_data(request):
     plt.xlabel('Critical Reading Mean Score')
     plt.title('Top 10 Schools by Writing Mean Score')
     plt.gca().invert_yaxis()
-    plt.savefig('top10writing.png')
+    writing_image_path = os.path.join(static_dir, 'top10writing.png')
+    plt.savefig(writing_image_path)
+    plt.close()
 
-    return render(request, 'data.html', {'data': data })
+    context = {
+        'data': data,
+        'math_image': 'images/top10maths.png',
+        'reading_image': 'images/top10reading.png',
+        'writing_image': 'images/top10writing.png'
+    }
+
+    return render(request, 'data.html',context)
