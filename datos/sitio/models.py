@@ -8,3 +8,6 @@ class School(models.Model):
     Critical_Reading_Mean = models.IntegerField(default=0) 
     Mathematics_Mean = models.IntegerField(default=0) 
     Writing_Mean = models.IntegerField(default=0) 
+    Average_Score = models.FloatField(default=0)
+    def __str__(self):
+        return self.School_Name
