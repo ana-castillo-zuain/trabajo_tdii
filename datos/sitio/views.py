@@ -7,6 +7,7 @@ from django.db.models import Avg, Max, Min
 import csv
 import matplotlib.pyplot as plt 
 import os
+import seaborn as sns
 
 # Create your views here.
 def index(request):
@@ -24,24 +25,24 @@ def upload_file(request):
             average_score = (critical_reading_mean + mathematics_mean + writing_mean) / 3
             School.objects.create(
                 DBN=row[0],
-                School_Name=row[1],
-                Number_of_Test_Takers=number_of_test_takers,
-                Critical_Reading_Mean=critical_reading_mean,
-                Mathematics_Mean=mathematics_mean,
-                Writing_Mean=writing_mean,
-                Average_Score=average_score
+                School_Name = row[1],
+                Number_of_Test_Takers = number_of_test_takers,
+                Critical_Reading_Mean = critical_reading_mean,
+                Mathematics_Mean = mathematics_mean,
+                Writing_Mean = writing_mean,
+                Average_Score = average_score
             )
     return HttpResponseRedirect('data/')
 
 
 def view_data(request):
     data = School.objects.all()
-    # names = [data.School_Name for data in data]
-    # students = [data.Number_of_Test_Takers for data in data]
-    # reading = [data.Critical_Reading_Mean for data in data]
-    # maths = [data.Mathematics_Mean for data in data]
-    # writing = [data.Writing_Mean for data in data]
-    # avg = [data.Average_Score for data in data]
+    names = [school.School_Name for school in data]
+    students = [school.Number_of_Test_Takers for school in data]
+    reading = [school.Critical_Reading_Mean for school in data]
+    maths = [school.Mathematics_Mean for school in data]
+    writing = [school.Writing_Mean for school in data]
+    average_scores = [school.Average_Score for school in data]
     sample_schools = data[:10]
 
     static_dir = os.path.join(settings.STATICFILES_DIRS[0], 'images')
@@ -114,13 +115,39 @@ def view_data(request):
     plt.savefig(writing_image_path)
     plt.close()
 
+    plt.figure(figsize=(10, 6))
+    sns.hist(average_scores, bins=50, kde=True, color='slateblue', edgecolor='black')
+    plt.xlabel('Average Score')
+    plt.ylabel('Number of Schools')
+    plt.title('Distribution of Average Scores')
+    histogram_path = os.path.join(static_dir, 'average_score_histogram.png')
+    plt.savefig(histogram_path)
+    plt.close()
+
+    scores = {'Critical Reading': reading, 'Mathematics': maths, 'Writing': writing, 'Average':average_scores}
+    subjects = []
+    marks = []
+    for subject, scores_list in scores.items():
+        subjects.extend([subject] * len(scores_list))
+        marks.extend(scores_list)
+    plt.figure(figsize=(12, 8))
+    sns.boxplot(x=subjects, y=marks, palette='Set_2')
+    plt.xlabel('Subject')
+    plt.ylabel('Scores')
+    plt.title('Boxplot of Scores in Each Subject')
+    boxplot_path = os.path.join(static_dir, 'subjects_boxplot.png')
+    plt.savefig(boxplot_path)
+    plt.close()
+
     context = {
         'data': data,
         'statistics': statistics,
-        'math_image': 'images/top10maths.png',
-        'reading_image': 'images/top10reading.png',
-        'writing_image': 'images/top10writing.png',
-        'average_image': 'images/top10average.png'
+        'math': 'images/top10maths.png',
+        'reading': 'images/top10reading.png',
+        'writing': 'images/top10writing.png',
+        'average': 'images/top10average.png',
+        'histogram': 'images/average_score_histogram.png',
+        'boxplot' : 'images/subjects_boxplot.png'
     }
 
     return render(request, 'data.html', context)
