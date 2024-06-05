@@ -46,13 +46,13 @@ def view_data(request):
 
     static_dir = os.path.join(settings.STATIC_ROOT, 'images')
     
-    top10_average = data.order_by('-Average_Score')[:10]
+    top10_average = data.order_by('-Average_Score')[:20]
     school_nameso = [school.School_Name for school in top10_average]
     average = [school.Average_Score for school in top10_average]
     plt.figure(figsize=(10, 6))
     plt.barh(school_nameso, average, color='orange')
     plt.xlabel('Average Score')
-    plt.title('Top 10 Schools by Average Score')
+    plt.title('Top 5 Schools by Average Score')
     plt.gca().invert_yaxis()
     average_image_path = os.path.join(static_dir, 'top10average.png')
     plt.savefig(average_image_path)
@@ -76,37 +76,37 @@ def view_data(request):
         }
     }
 
-    top10_maths = data.order_by('-Mathematics_Mean')[:10]
+    top10_maths = data.order_by('-Mathematics_Mean')[:20]
     school_names = [school.School_Name for school in top10_maths]
     math_means = [school.Mathematics_Mean for school in top10_maths]
     plt.figure(figsize=(10, 6))
     plt.barh(school_names, math_means, color='maroon')
     plt.xlabel('Mathematics Mean Score')
-    plt.title('Top 10 Schools by Mathematics Mean Score')
+    plt.title('Top 3 Schools by Mathematics Mean Score')
     plt.gca().invert_yaxis()
     math_image_path = os.path.join(static_dir, 'top10maths.png')
     plt.savefig(math_image_path)
     plt.close()
 
-    top10_reading = data.order_by('-Critical_Reading_Mean')[:10]
+    top10_reading = data.order_by('-Critical_Reading_Mean')[:20]
     school_namesm = [school.School_Name for school in top10_reading]
     math_means = [school.Critical_Reading_Mean for school in top10_reading]
     plt.figure(figsize=(10, 6))
     plt.barh(school_namesm, math_means, color='seagreen')
     plt.xlabel('Critical Reading Mean Score')
-    plt.title('Top 10 Schools by Critical Reading Mean Score')
+    plt.title('Top 3 Schools by Critical Reading Mean Score')
     plt.gca().invert_yaxis()
     reading_image_path = os.path.join(static_dir, 'top10reading.png')
     plt.savefig(reading_image_path)
     plt.close()
 
-    top10_writing = data.order_by('-Writing_Mean')[:10]
+    top10_writing = data.order_by('-Writing_Mean')[:20]
     school_namesw = [school.School_Name for school in top10_writing]
     writing_means = [school.Writing_Mean for school in top10_writing]
     plt.figure(figsize=(10, 6))
     plt.barh(school_namesw, writing_means, color='skyblue')
     plt.xlabel('Critical Reading Mean Score')
-    plt.title('Top 10 Schools by Writing Mean Score')
+    plt.title('Top 3 Schools by Writing Mean Score')
     plt.gca().invert_yaxis()
     writing_image_path = os.path.join(static_dir, 'top10writing.png')
     plt.savefig(writing_image_path)
