@@ -43,13 +43,10 @@ def view_data(request):
     maths = [school.Mathematics_Mean for school in data]
     writing = [school.Writing_Mean for school in data]
     average_scores = [school.Average_Score for school in data]
-    sample_schools = data[:10]
 
-    static_dir = os.path.join(settings.STATICFILES_DIRS[0], 'images')
-    if not os.path.exists(static_dir):
-        os.makedirs(static_dir)
+    static_dir = os.path.join(settings.STATIC_ROOT, 'images')
     
-    top10_average = data.order_by('-Average_Scores')[:10]
+    top10_average = data.order_by('-Average_Score')[:10]
     school_nameso = [school.School_Name for school in top10_average]
     average = [school.Average_Score for school in top10_average]
     plt.figure(figsize=(10, 6))
@@ -99,11 +96,11 @@ def view_data(request):
     plt.xlabel('Critical Reading Mean Score')
     plt.title('Top 10 Schools by Critical Reading Mean Score')
     plt.gca().invert_yaxis()
-    math_image_path = os.path.join(static_dir, 'top10maths.png')
-    plt.savefig(math_image_path)
+    reading_image_path = os.path.join(static_dir, 'top10reading.png')
+    plt.savefig(reading_image_path)
     plt.close()
 
-    top10_writing = data.order_by('-Writing_Means')[:10]
+    top10_writing = data.order_by('-Writing_Mean')[:10]
     school_namesw = [school.School_Name for school in top10_writing]
     writing_means = [school.Writing_Mean for school in top10_writing]
     plt.figure(figsize=(10, 6))
@@ -116,7 +113,7 @@ def view_data(request):
     plt.close()
 
     plt.figure(figsize=(10, 6))
-    sns.hist(average_scores, bins=50, kde=True, color='slateblue', edgecolor='black')
+    sns.histplot(average_scores, bins=50, kde=True, color='slateblue', edgecolor='black')
     plt.xlabel('Average Score')
     plt.ylabel('Number of Schools')
     plt.title('Distribution of Average Scores')
@@ -131,7 +128,7 @@ def view_data(request):
         subjects.extend([subject] * len(scores_list))
         marks.extend(scores_list)
     plt.figure(figsize=(12, 8))
-    sns.boxplot(x=subjects, y=marks, palette='Set_2')
+    sns.boxplot(x=subjects, y=marks)
     plt.xlabel('Subject')
     plt.ylabel('Scores')
     plt.title('Boxplot of Scores in Each Subject')
