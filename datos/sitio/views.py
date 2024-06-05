@@ -58,7 +58,7 @@ def graficos(request):
     plt.barh(school_nameso, average, color='orange')
     plt.xlabel('Average Score')
     plt.yticks(rotation=45, ha='right')
-    plt.title('Top 5 Schools by Average Score')
+    plt.title('Top 10 Schools by Average Score')
     plt.gca().invert_yaxis()
     plt.tight_layout()
     buffer = BytesIO()
@@ -87,14 +87,14 @@ def graficos(request):
         }
     }
 
-    top10_maths = data.order_by('-Mathematics_Mean')[:30]
+    top10_maths = data.order_by('-Mathematics_Mean')[:20]
     school_names = [school.School_Name for school in top10_maths]
     math_means = [school.Mathematics_Mean for school in top10_maths]
     plt.figure(figsize=(15, 6))
     plt.barh(school_names, math_means, color='maroon')
     plt.xlabel('Mathematics Mean Score')
     plt.yticks(rotation=45, ha='right')
-    plt.title('Top 5 Schools by Mathematics Mean Score')
+    plt.title('Top 10 Schools by Mathematics Mean Score')
     plt.gca().invert_yaxis()
     plt.tight_layout()
     buffer = BytesIO()
@@ -105,14 +105,14 @@ def graficos(request):
     math_graphic = base64.b64encode(math_png)
     math_graphic = math_graphic.decode('utf-8')
 
-    top10_reading = data.order_by('-Critical_Reading_Mean')[:30]
+    top10_reading = data.order_by('-Critical_Reading_Mean')[:20]
     school_namesm = [school.School_Name for school in top10_reading]
     math_means = [school.Critical_Reading_Mean for school in top10_reading]
     plt.figure(figsize=(15, 6))
     plt.barh(school_namesm, math_means, color='seagreen')
     plt.xlabel('Critical Reading Mean Score')
     plt.yticks(rotation=45, ha='right')
-    plt.title('Top 5 Schools by Critical Reading Mean Score')
+    plt.title('Top 10 Schools by Critical Reading Mean Score')
     plt.gca().invert_yaxis()
     plt.tight_layout()
     buffer = BytesIO()
@@ -123,14 +123,14 @@ def graficos(request):
     reading_graphic = base64.b64encode(reading_png)
     reading_graphic = reading_graphic.decode('utf-8')
 
-    top10_writing = data.order_by('-Writing_Mean')[:30]
+    top10_writing = data.order_by('-Writing_Mean')[:20]
     school_namesw = [school.School_Name for school in top10_writing]
     writing_means = [school.Writing_Mean for school in top10_writing]
     plt.figure(figsize=(15, 6))
     plt.barh(school_namesw, writing_means, color='skyblue')
     plt.xlabel('Critical Reading Mean Score')
     plt.yticks(rotation=45, ha='right')
-    plt.title('Top 5 Schools by Writing Mean Score')
+    plt.title('Top 10 Schools by Writing Mean Score')
     plt.gca().invert_yaxis()
     plt.tight_layout()
     buffer = BytesIO()
