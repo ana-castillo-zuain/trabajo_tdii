@@ -19,10 +19,13 @@
         
         <ol style="font-family: 'Courier New', Courier, monospace; margin-left: 40px; color:black; font-style: bold;">
             <li>Top 5 colegios en notas generales</li>
-            <img src="{% static average %}">
+            <img src="data:image/png;base64,{{ average|safe }}">
             <li>Top 3 colegios con mejores resultados en Critical Reading Mean</li>
+            <img src="data:image/png;base64,{{ reading|safe }}">
             <li>Top 3 colegios con mejores resultados en Mathematics Mean</li>
+            <img src="data:image/png;base64,{{ math|safe }}">
             <li>Top 3 colegios con mejores resultados en Writing Mean</li>
+            <img src="data:image/png;base64,{{ writing|safe }}">
         </ol>
 
 
