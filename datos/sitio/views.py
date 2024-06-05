@@ -126,9 +126,11 @@ def graficos(request):
     plt.xlabel('Average Score')
     plt.ylabel('Number of Schools')
     plt.title('Distribution of Average Scores')
-    histogram_path = os.path.join(static_dir, 'average_score_histogram.png')
-    plt.savefig(histogram_path)
-    plt.close()
+    buffer.seek(0)
+    hist_png = buffer.getvalue()
+    buffer.close()
+    hist_graphic = base64.b64encode(image_png)
+    hist_graphic = hist_graphic.decode('utf-8')
 
     scores = {'Critical Reading': reading, 'Mathematics': maths, 'Writing': writing, 'Average':average_scores}
     subjects = []
@@ -141,9 +143,11 @@ def graficos(request):
     plt.xlabel('Subject')
     plt.ylabel('Scores')
     plt.title('Boxplot of Scores in Each Subject')
-    boxplot_path = os.path.join(static_dir, 'subjects_boxplot.png')
-    plt.savefig(boxplot_path)
-    plt.close()
+    buffer.seek(0)
+    box_png = buffer.getvalue()
+    buffer.close()
+    box_graphic = base64.b64encode(image_png)
+    box_graphic = box_graphic.decode('utf-8')
 
     context = {
         'data': data,
