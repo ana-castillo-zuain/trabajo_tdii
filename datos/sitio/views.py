@@ -38,7 +38,7 @@ def data(request):
     return render(request, 'data.html')
 
 def tabla(request):
-    return render(request, tabla.html)
+    return render(request, 'tabla.html')
 
 def graficos(request):
     data = School.objects.all()
