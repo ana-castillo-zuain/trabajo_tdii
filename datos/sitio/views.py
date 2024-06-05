@@ -8,6 +8,8 @@ import csv
 import matplotlib.pyplot as plt 
 import os
 import seaborn as sns
+from io import BytesIO
+import base64
 
 # Create your views here.
 def index(request):
@@ -60,9 +62,13 @@ def graficos(request):
     plt.title('Top 5 Schools by Average Score')
     plt.gca().invert_yaxis()
     plt.tight_layout
-    average_image_path = os.path.join(static_dir, 'top10average.png')
-    plt.savefig(average_image_path)
-    plt.close()
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    avg_png = buffer.getvalue()
+    buffer.flush()
+    avg_graphic = base64.b64encode(avg_png)
+    avg_graphic = avg_graphic.decode('utf-8')
 
     statistics = {
         'Critical Reading': {
@@ -91,9 +97,11 @@ def graficos(request):
     plt.title('Top 3 Schools by Mathematics Mean Score')
     plt.gca().invert_yaxis()
     plt.tight_layout
-    math_image_path = os.path.join(static_dir, 'top10maths.png')
-    plt.savefig(math_image_path)
-    plt.close()
+    buffer.seek(0)
+    math_png = buffer.getvalue()
+    buffer.flush()
+    math_graphic = base64.b64encode(math_png)
+    math_graphic = math_graphic.decode('utf-8')
 
     top10_reading = data.order_by('-Critical_Reading_Mean')[:20]
     school_namesm = [school.School_Name for school in top10_reading]
@@ -104,9 +112,11 @@ def graficos(request):
     plt.title('Top 3 Schools by Critical Reading Mean Score')
     plt.gca().invert_yaxis()
     plt.tight_layout
-    reading_image_path = os.path.join(static_dir, 'top10reading.png')
-    plt.savefig(reading_image_path)
-    plt.close()
+    buffer.seek(0)
+    reading_png = buffer.getvalue()
+    buffer.flush()
+    reading_graphic = base64.b64encode(reading_png)
+    reading_graphic = reading_graphic.decode('utf-8')
 
     top10_writing = data.order_by('-Writing_Mean')[:20]
     school_namesw = [school.School_Name for school in top10_writing]
@@ -117,18 +127,22 @@ def graficos(request):
     plt.title('Top 3 Schools by Writing Mean Score')
     plt.gca().invert_yaxis()
     plt.tight_layout
-    writing_image_path = os.path.join(static_dir, 'top10writing.png')
-    plt.savefig(writing_image_path)
-    plt.close()
+    buffer.seek(0)
+    writing_png = buffer.getvalue()
+    buffer.flush()
+    writing_graphic = base64.b64encode(writing_png)
+    writing_graphic = writing_graphic.decode('utf-8')
 
     plt.figure(figsize=(10, 6))
     sns.histplot(average_scores, bins=50, kde=True, color='slateblue', edgecolor='black')
     plt.xlabel('Average Score')
     plt.ylabel('Number of Schools')
     plt.title('Distribution of Average Scores')
-    histogram_path = os.path.join(static_dir, 'average_score_histogram.png')
-    plt.savefig(histogram_path)
-    plt.close()
+    buffer.seek(0)
+    hist_png = buffer.getvalue()
+    buffer.flush()
+    hist_graphic = base64.b64encode(hist_png)
+    hist_graphic = hist_graphic.decode('utf-8')
 
     scores = {'Critical Reading': reading, 'Mathematics': maths, 'Writing': writing, 'Average':average_scores}
     subjects = []
@@ -141,19 +155,21 @@ def graficos(request):
     plt.xlabel('Subject')
     plt.ylabel('Scores')
     plt.title('Boxplot of Scores in Each Subject')
-    boxplot_path = os.path.join(static_dir, 'subjects_boxplot.png')
-    plt.savefig(boxplot_path)
-    plt.close()
+    buffer.seek(0)
+    box_png = buffer.getvalue()
+    buffer.close()
+    box_graphic = base64.b64encode(box_png)
+    box_graphic = box_graphic.decode('utf-8')
 
     context = {
         'data': data,
         'statistics': statistics,
-        'math': 'images/top10maths.png',
-        'reading': 'images/top10reading.png',
-        'writing': 'images/top10writing.png',
-        'average': 'images/top10average.png',
-        'histogram': 'images/average_score_histogram.png',
-        'boxplot' : 'images/subjects_boxplot.png'
+        'average': avg_graphic,
+        'math' : math_graphic,
+        'reading' : reading_graphic,
+        'writing' : writing_graphic,
+        'hist' : hist_graphic,
+        'box' : box_graphic
     }
 
     return render(request, 'graficos.html', context)
