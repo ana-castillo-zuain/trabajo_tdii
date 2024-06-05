@@ -20,27 +20,27 @@
         <ol style="font-family: 'Courier New', Courier, monospace; margin-left: 40px; color:black; font-style: bold;">
             <li>Top 10 colegios en notas generales</li>
             <div class="overflow-x-scroll" >
-                <img src="data:image/png;base64,{{ average|safe }}" style="max-width: 80%; min-width: 200px">
+                <img src="data:image/png;base64,{{ average|safe }}" style="object-fit: contain; min-width: 400px ;width: 95%; ">
             </div>
             <li>Top 10 colegios con mejores resultados en Critical Reading Mean</li>
             <div class="overflow-x-scroll">
-                <img src="data:image/png;base64,{{ reading|safe }}" style="max-width: 80%; min-width: 200px">
+                <img src="data:image/png;base64,{{ reading|safe }}" style="object-fit: contain; min-width: 400px ;width: 95%;">
             </div>
             <li>Top 10 colegios con mejores resultados en Mathematics Mean</li>
             <div class="overflow-x-scroll">
-                <img src="data:image/png;base64,{{ math|safe }}" style="max-width: 80%; min-width: 200px">
+                <img src="data:image/png;base64,{{ math|safe }}" style="object-fit: contain; min-width: 400px ;width: 95%; ">
             </div>
             <li>Top 10 colegios con mejores resultados en Writing Mean</li>
             <div class="overflow-x-scroll">
-                <img src="data:image/png;base64,{{ writing|safe }}" style="max-width: 80%; min-width: 200px">
+                <img src="data:image/png;base64,{{ writing|safe }}" style="object-fit: contain; min-width: 400px ;width: 95%; ">
             </div>
             <li>Histograma con la distribucion de las notas promedio</li>
             <div class="overflow-x-scroll">
-                <img src="data:image/png;base64,{{ hist|safe }}" style="max-width: 80%; min-width: 200px">
+                <img src="data:image/png;base64,{{ hist|safe }}" style="object-fit: contain; min-width: 400px ;width: 95%; ">
             </div>
             <li>Boxplots con las notas para cada asignatura y en general</li>
             <div class="overflow-x-scroll">
-                <img src="data:image/png;base64,{{ box|safe }}" style="max-width: 80%; min-width: 200px">
+                <img src="data:image/png;base64,{{ box|safe }}" style="object-fit: contain; min-width: 400px ;width: 95%; ">
             </div>
         </ol>
 
