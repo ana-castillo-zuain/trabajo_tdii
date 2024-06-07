@@ -42,7 +42,8 @@ def data(request):
     return render(request, 'data.html')
 
 def tabla(request):
-    return render(request, 'tabla.html')
+    data = School.objects.all()
+    return render(request, 'tabla.html', {'data':data})
 
 def descripcion(request):
     return render(request, 'descripcion.html')
