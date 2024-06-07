@@ -10,6 +10,7 @@ import os
 import seaborn as sns
 from io import BytesIO
 import base64
+import numpy as np
 
 # Create your views here.
 def index(request):
@@ -34,6 +35,7 @@ def upload_file(request):
                 Writing_Mean = writing_mean,
                 Average_Score = average_score
             )
+
     return HttpResponseRedirect('data/')
 
 def data(request):
@@ -41,6 +43,9 @@ def data(request):
 
 def tabla(request):
     return render(request, 'tabla.html')
+
+def descripcion(request):
+    return render(request, 'descripcion.html')
 
 def graficos(request):
     data = School.objects.all()
@@ -55,10 +60,10 @@ def graficos(request):
     school_nameso = [school.School_Name for school in top10_average]
     average = [school.Average_Score for school in top10_average]
     plt.figure(figsize=(15, 6))
-    plt.barh(school_nameso, average, color='orange')
-    plt.xlabel('Average Score')
+    plt.barh(school_nameso, average, color='khaki')
+    plt.xlabel('Nota Promedio')
     plt.yticks(rotation=45, ha='right')
-    plt.title('Top 10 Schools by Average Score')
+    plt.title('Top 10 Colegios segun Nota Promedio General')
     plt.gca().invert_yaxis()
     plt.tight_layout()
     buffer = BytesIO()
@@ -91,10 +96,10 @@ def graficos(request):
     school_names = [school.School_Name for school in top10_maths]
     math_means = [school.Mathematics_Mean for school in top10_maths]
     plt.figure(figsize=(15, 6))
-    plt.barh(school_names, math_means, color='maroon')
-    plt.xlabel('Mathematics Mean Score')
+    plt.barh(school_names, math_means, color='firebrick')
+    plt.xlabel('Nota Promedio en Matemáticas')
     plt.yticks(rotation=45, ha='right')
-    plt.title('Top 10 Schools by Mathematics Mean Score')
+    plt.title('Top 10 Colegios segun Nota Promedio en Matemáticas')
     plt.gca().invert_yaxis()
     plt.tight_layout()
     buffer = BytesIO()
@@ -106,13 +111,13 @@ def graficos(request):
     math_graphic = math_graphic.decode('utf-8')
 
     top10_reading = data.order_by('-Critical_Reading_Mean')[:20]
-    school_namesm = [school.School_Name for school in top10_reading]
-    math_means = [school.Critical_Reading_Mean for school in top10_reading]
+    school_namesr = [school.School_Name for school in top10_reading]
+    read_means = [school.Critical_Reading_Mean for school in top10_reading]
     plt.figure(figsize=(15, 6))
-    plt.barh(school_namesm, math_means, color='seagreen')
-    plt.xlabel('Critical Reading Mean Score')
+    plt.barh(school_namesr, read_means, color='mediumseagreen')
+    plt.xlabel('Nota Promedio en Lectura Crítica')
     plt.yticks(rotation=45, ha='right')
-    plt.title('Top 10 Schools by Critical Reading Mean Score')
+    plt.title('Top 10 Colegios segun Nota Promedio en Lectura Crítica')
     plt.gca().invert_yaxis()
     plt.tight_layout()
     buffer = BytesIO()
@@ -128,9 +133,9 @@ def graficos(request):
     writing_means = [school.Writing_Mean for school in top10_writing]
     plt.figure(figsize=(15, 6))
     plt.barh(school_namesw, writing_means, color='skyblue')
-    plt.xlabel('Critical Reading Mean Score')
+    plt.xlabel('Nota Promedio de Escritura')
     plt.yticks(rotation=45, ha='right')
-    plt.title('Top 10 Schools by Writing Mean Score')
+    plt.title('Top 10 Colegios segun Nota Promedio en Escritura')
     plt.gca().invert_yaxis()
     plt.tight_layout()
     buffer = BytesIO()
@@ -142,10 +147,10 @@ def graficos(request):
     writing_graphic = writing_graphic.decode('utf-8')
 
     plt.figure(figsize=(10, 6))
-    sns.histplot(average_scores, bins=50, kde=True, color='slateblue', edgecolor='black')
-    plt.xlabel('Average Score')
-    plt.ylabel('Number of Schools')
-    plt.title('Distribution of Average Scores')
+    sns.histplot(average_scores, bins=50, kde=True, color='crimson', edgecolor='black')
+    plt.xlabel('Nota Promedio')
+    plt.ylabel('Cantidad de Colegios')
+    plt.title('Distribucion de Notas Promedio')
     plt.tight_layout()
     buffer = BytesIO()
     plt.savefig(buffer, format='png')
@@ -163,9 +168,9 @@ def graficos(request):
         marks.extend(scores_list)
     plt.figure(figsize=(12, 8))
     sns.boxplot(x=subjects, y=marks)
-    plt.xlabel('Subject')
-    plt.ylabel('Scores')
-    plt.title('Boxplot of Scores in Each Subject')
+    plt.xlabel('Asignaturas')
+    plt.ylabel('Notas')
+    plt.title('Boxplot de Notas para cada Asignatura')
     plt.tight_layout()
     buffer = BytesIO()
     plt.savefig(buffer, format='png')
@@ -175,6 +180,31 @@ def graficos(request):
     box_graphic = base64.b64encode(box_png)
     box_graphic = box_graphic.decode('utf-8')
 
+    scores_data = {
+        'Critical_Reading_Mean': reading,
+        'Mathematics_Mean': maths,
+        'Writing_Mean': writing,
+        'Number_of_Test_Takers': students
+    }
+
+    correlation_matrix = np.corrcoef([
+        scores_data['Critical_Reading_Mean'],
+        scores_data['Mathematics_Mean'],
+        scores_data['Writing_Mean'],
+        scores_data['Number_of_Test_Takers']
+    ])
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', xticklabels=['Lectura Crítica', 'Matematica', 'Escritura', 'Cantidad de Estudiantes'], yticklabels=['Lectura Crítica', 'Matematica', 'Escritura', 'Cantidad de Estudiantes'])
+    plt.title('Matriz de Correlación entre Cantidad de Estudiantes y Asignaturas')
+    plt.tight_layout()
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    heat_png = buffer.getvalue()
+    buffer.close()
+    heat_graphic = base64.b64encode(heat_png)
+    heat_graphic = heat_graphic.decode('utf-8')
+
     context = {
         'data': data,
         'statistics': statistics,
@@ -183,7 +213,8 @@ def graficos(request):
         'reading' : reading_graphic,
         'writing' : writing_graphic,
         'hist' : hist_graphic,
-        'box' : box_graphic
+        'box' : box_graphic,
+        'heat' : heat_graphic
     }
 
     return render(request, 'graficos.html', context)
