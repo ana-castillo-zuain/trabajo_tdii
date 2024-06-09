@@ -1,18 +1,18 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.contrib.staticfiles.storage import staticfiles_storage
-from django.conf import settings
 from .models import School
 from django.db.models import Avg, Max, Min
 import csv
 import matplotlib.pyplot as plt 
-import os
 import seaborn as sns
 from io import BytesIO
 import base64
 import numpy as np
+from django.core.paginator import Paginator
 
 # Create your views here.
+
 def index(request):
     return render(request, 'index.html')
 
@@ -42,8 +42,11 @@ def data(request):
     return render(request, 'data.html')
 
 def tabla(request):
-    data = School.objects.all()
-    return render(request, 'tabla.html', {'data':data})
+    p = Paginator(School.objects.all(), 40)
+    page = request.GET.get('page')
+    schools = p.get_page(page)
+
+    return render(request, 'tabla.html', { 'schools' :schools})
 
 def descripcion(request):
     return render(request, 'descripcion.html')
