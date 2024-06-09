@@ -18,9 +18,9 @@
 
 <body style="background-color: #FFE585 ; margin-left: 30px; margin-top: 30px;">
     
-<a href="http://127.0.0.1:8000/sitio/data/"><button type="button" class="btn btn-outline-danger">Volver</button></a>
-<br>
-
+<a href="http://127.0.0.1:8000/sitio/data/"><button type="button" class="btn btn-outline-danger">&laquo Volver </button></a>
+</br>
+</br>
 <h1>SAT Dataset</h1>
 <style>
     table {
@@ -29,13 +29,20 @@
     }
     th, td {
         border: 1px solid black;
-        padding: 8px;
+        padding: 9px;
         text-align: left;
     }
     th {
-        background-color: #f2f2f2;
+        background-color: Khaki;
     }
-    tr {background-color: #f5f5f5;}
+    tr {background-color: LemonChiffon;}
+    div{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 10px;
+        gap:10px
+    }
 </style>
 <div class="overflow-x-scroll">
     <table>
@@ -51,7 +58,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for school in data %}
+            {% for school in schools %}
                 <tr>
                     <td>{{ school.DBN }}</td>
                     <td>{{ school.School_Name }}</td>
@@ -65,5 +72,31 @@
         </tbody>
     </table>
 </div>
+</br>
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+        {% if schools.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href='?page=1' style='color:SaddleBrown;background-color:LemonChiffon'>&laquo 1</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href='?page={{schools.previous_page_number}}' style='color:SaddleBrown;background-color:LemonChiffon'> < </a>
+            </li>
+        {% endif %}
+
+        <li class="page-item">
+            <a class="page-link" href='#' style='color:SaddleBrown;background-color:LemonChiffon'>{{schools.number}} de {{schools.paginator.num_pages}}</a>
+        </li>
+
+        {% if schools.has_next %}
+            <li class="page-item">
+                <a class="page-link" href='?page={{schools.next_page_number}}' style='color:SaddleBrown;background-color:LemonChiffon'> > </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href='?page={{schools.paginator.num_pages}}' style='color:SaddleBrown;background-color:LemonChiffon'>15 &raquo</a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
 </body>
 </html>
