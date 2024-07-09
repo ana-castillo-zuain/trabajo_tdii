@@ -40,38 +40,24 @@
         </br>
         <div style='display:flex;flex-direction:column; gap:20px, padding: 30%'>
             <ol style="font-family: 'Courier New', Courier, monospace; margin-left: 40px; color:black; font-style: bold;">
-                <li><h3>Histograma con la distribucion de las notas promedio</h3></li>
-                <div class="overflow-x-scroll">
-                    <img src="data:image/png;base64,{{ hist|safe }}" style="object-fit: contain; min-width: 400px ;width: 95%; ">
+                <li><h3>Top 10 colegios en notas generales</h3></li>
+                <div class="overflow-x-scroll" >
+                    <img src="data:image/png;base64,{{ average|safe }}" style="object-fit: contain; min-width: 400px ;width: 95%; ">
                 </div>
                 <br>
-                <li><h3>Boxplots con las notas para cada asignatura y en general</h3></li>
+                <li><h3>Top 10 colegios con mejores resultados en Critical Reading Mean</h3></li>
                 <div class="overflow-x-scroll">
-                    <img src="data:image/png;base64,{{ box|safe }}" style="object-fit: contain; min-width: 400px ;width: 95%; ">
+                    <img src="data:image/png;base64,{{ reading|safe }}" style="object-fit: contain; min-width: 400px ;width: 95%;">
                 </div>
                 <br>
-                <li><h3>Estadisticas de cada asignatura</h3></li>
-                <div class='overflow-x-scroll'>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Asignatura</th>
-                                    <th>Promedio</th>
-                                    <th>Maximo</th>
-                                    <th>Minimo</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for subject, stats in statistics.items %}
-                                <tr>
-                                    <td>{{ subject }}</td>
-                                    <td>{{ stats.average|floatformat:2 }}</td>
-                                    <td>{{ stats.max }}</td>
-                                    <td>{{ stats.min }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                <li><h3>Top 10 colegios con mejores resultados en Mathematics Mean</h3></li>
+                <div class="overflow-x-scroll">
+                    <img src="data:image/png;base64,{{ math|safe }}" style="object-fit: contain; min-width: 400px ;width: 95%; ">
+                </div>
+                <br>
+                <li><h3>Top 10 colegios con mejores resultados en Writing Mean</h3></li>
+                <div class="overflow-x-scroll">
+                    <img src="data:image/png;base64,{{ writing|safe }}" style="object-fit: contain; min-width: 400px ;width: 95%; ">
                 </div>
                 <br>
             </ol>

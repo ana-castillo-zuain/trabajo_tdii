@@ -51,14 +51,8 @@ def tabla(request):
 def descripcion(request):
     return render(request, 'descripcion.html')
 
-def graficos(request):
+def top10(request):
     data = School.objects.all()
-    names = [school.School_Name for school in data]
-    students = [school.Number_of_Test_Takers for school in data]
-    reading = [school.Critical_Reading_Mean for school in data]
-    maths = [school.Mathematics_Mean for school in data]
-    writing = [school.Writing_Mean for school in data]
-    average_scores = [school.Average_Score for school in data]
     
     top10_average = data.order_by('-Average_Score')[:20]
     school_nameso = [school.School_Name for school in top10_average]
@@ -78,23 +72,23 @@ def graficos(request):
     avg_graphic = base64.b64encode(avg_png)
     avg_graphic = avg_graphic.decode('utf-8')
 
-    statistics = {
-        'Critical Reading': {
-            'average': School.objects.all().aggregate(Avg('Critical_Reading_Mean'))['Critical_Reading_Mean__avg'],
-            'max': School.objects.all().aggregate(Max('Critical_Reading_Mean'))['Critical_Reading_Mean__max'],
-            'min': School.objects.all().aggregate(Min('Critical_Reading_Mean'))['Critical_Reading_Mean__min'],
-        },
-        'Mathematics': {
-            'average': School.objects.all().aggregate(Avg('Mathematics_Mean'))['Mathematics_Mean__avg'],
-            'max': School.objects.all().aggregate(Max('Mathematics_Mean'))['Mathematics_Mean__max'],
-            'min': School.objects.all().aggregate(Min('Mathematics_Mean'))['Mathematics_Mean__min'],
-        },
-        'Writing': {
-            'average': School.objects.all().aggregate(Avg('Writing_Mean'))['Writing_Mean__avg'],
-            'max': School.objects.all().aggregate(Max('Writing_Mean'))['Writing_Mean__max'],
-            'min': School.objects.all().aggregate(Min('Writing_Mean'))['Writing_Mean__min'],
-        }
-    }
+    top10_writing = data.order_by('-Writing_Mean')[:20]
+    school_namesw = [school.School_Name for school in top10_writing]
+    writing_means = [school.Writing_Mean for school in top10_writing]
+    plt.figure(figsize=(15, 6))
+    plt.barh(school_namesw, writing_means, color='skyblue')
+    plt.xlabel('Nota Promedio de Escritura')
+    plt.yticks(rotation=45, ha='right')
+    plt.title('Top 10 Colegios segun Nota Promedio en Escritura')
+    plt.gca().invert_yaxis()
+    plt.tight_layout()
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    writing_png = buffer.getvalue()
+    buffer.close()
+    writing_graphic = base64.b64encode(writing_png)
+    writing_graphic = writing_graphic.decode('utf-8')
 
     top10_maths = data.order_by('-Mathematics_Mean')[:20]
     school_names = [school.School_Name for school in top10_maths]
@@ -132,23 +126,41 @@ def graficos(request):
     reading_graphic = base64.b64encode(reading_png)
     reading_graphic = reading_graphic.decode('utf-8')
 
-    top10_writing = data.order_by('-Writing_Mean')[:20]
-    school_namesw = [school.School_Name for school in top10_writing]
-    writing_means = [school.Writing_Mean for school in top10_writing]
-    plt.figure(figsize=(15, 6))
-    plt.barh(school_namesw, writing_means, color='skyblue')
-    plt.xlabel('Nota Promedio de Escritura')
-    plt.yticks(rotation=45, ha='right')
-    plt.title('Top 10 Colegios segun Nota Promedio en Escritura')
-    plt.gca().invert_yaxis()
-    plt.tight_layout()
-    buffer = BytesIO()
-    plt.savefig(buffer, format='png')
-    buffer.seek(0)
-    writing_png = buffer.getvalue()
-    buffer.close()
-    writing_graphic = base64.b64encode(writing_png)
-    writing_graphic = writing_graphic.decode('utf-8')
+    context = {
+        'average': avg_graphic,
+        'math' : math_graphic,
+        'reading' : reading_graphic,
+        'writing' : writing_graphic,
+    }
+    
+    return render(request, 'top10.html', context)
+
+def graficos(request):
+    data = School.objects.all()
+    students = [school.Number_of_Test_Takers for school in data]
+    reading = [school.Critical_Reading_Mean for school in data]
+    maths = [school.Mathematics_Mean for school in data]
+    writing = [school.Writing_Mean for school in data]
+    average_scores = [school.Average_Score for school in data]
+
+
+    statistics = {
+        'Critical Reading': {
+            'average': School.objects.all().aggregate(Avg('Critical_Reading_Mean'))['Critical_Reading_Mean__avg'],
+            'max': School.objects.all().aggregate(Max('Critical_Reading_Mean'))['Critical_Reading_Mean__max'],
+            'min': School.objects.all().aggregate(Min('Critical_Reading_Mean'))['Critical_Reading_Mean__min'],
+        },
+        'Mathematics': {
+            'average': School.objects.all().aggregate(Avg('Mathematics_Mean'))['Mathematics_Mean__avg'],
+            'max': School.objects.all().aggregate(Max('Mathematics_Mean'))['Mathematics_Mean__max'],
+            'min': School.objects.all().aggregate(Min('Mathematics_Mean'))['Mathematics_Mean__min'],
+        },
+        'Writing': {
+            'average': School.objects.all().aggregate(Avg('Writing_Mean'))['Writing_Mean__avg'],
+            'max': School.objects.all().aggregate(Max('Writing_Mean'))['Writing_Mean__max'],
+            'min': School.objects.all().aggregate(Min('Writing_Mean'))['Writing_Mean__min'],
+        }
+    }
 
     plt.figure(figsize=(10, 6))
     sns.histplot(average_scores, bins=50, kde=True, color='crimson', edgecolor='black')
@@ -184,6 +196,22 @@ def graficos(request):
     box_graphic = base64.b64encode(box_png)
     box_graphic = box_graphic.decode('utf-8')
 
+    context = {
+        'data': data,
+        'statistics': statistics,
+        'hist' : hist_graphic,
+        'box' : box_graphic,
+    }
+
+    return render(request, 'graficos.html', context)
+
+def correlacion(request):
+    data = School.objects.all()
+    students = [school.Number_of_Test_Takers for school in data]
+    reading = [school.Critical_Reading_Mean for school in data]
+    maths = [school.Mathematics_Mean for school in data]
+    writing = [school.Writing_Mean for school in data]
+
     scores_data = {
         'Critical_Reading_Mean': reading,
         'Mathematics_Mean': maths,
@@ -208,17 +236,9 @@ def graficos(request):
     buffer.close()
     heat_graphic = base64.b64encode(heat_png)
     heat_graphic = heat_graphic.decode('utf-8')
-
-    context = {
-        'data': data,
-        'statistics': statistics,
-        'average': avg_graphic,
-        'math' : math_graphic,
-        'reading' : reading_graphic,
-        'writing' : writing_graphic,
-        'hist' : hist_graphic,
-        'box' : box_graphic,
+    
+    context={
         'heat' : heat_graphic
     }
 
-    return render(request, 'graficos.html', context)
+    return render(request, 'heat.html', context)
