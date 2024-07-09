@@ -72,6 +72,14 @@ def top10(request):
     avg_graphic = base64.b64encode(avg_png)
     avg_graphic = avg_graphic.decode('utf-8')
 
+    context = {
+        'average': avg_graphic,
+    }
+    
+    return render(request, 'top10.html', context)
+
+def top10asig(request):
+    data = School.objects.all()
     top10_writing = data.order_by('-Writing_Mean')[:20]
     school_namesw = [school.School_Name for school in top10_writing]
     writing_means = [school.Writing_Mean for school in top10_writing]
@@ -127,13 +135,12 @@ def top10(request):
     reading_graphic = reading_graphic.decode('utf-8')
 
     context = {
-        'average': avg_graphic,
         'math' : math_graphic,
         'reading' : reading_graphic,
         'writing' : writing_graphic,
     }
     
-    return render(request, 'top10.html', context)
+    return render(request, 'top10asig.html', context)
 
 def graficos(request):
     data = School.objects.all()
