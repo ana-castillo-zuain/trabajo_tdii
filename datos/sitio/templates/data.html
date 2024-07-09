@@ -9,37 +9,13 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
     
-    <div class="conteiner text-left" >
-      <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid">
-          <a class="navbar-brand" > <b>algun titulo </b> </a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="link">Inicio</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Descripcion</a>
-              </li>
-              <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" >
-                  Graficos
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">Top 10 de cada asignatura</a></li>
-                  <li><a class="dropdown-item" href="#">Histograma</a></li>
-                  <li><a class="dropdown-item" href="#">Boxplot</a></li>
-                  <li><a class="dropdown-item" href="#">Matriz de correlacion</a></li>
-                </ul>
-              </div>
-            </ul>
-          </div>
-        </div>
-      </nav>  
-    </div>    
+     <style>
+
+      .wrap {
+        display: inline-block;
+        word-break: break-word; /* Allow word to break and wrap */
+    }
+     </style>  
   </head>
   <body style=" background-color: #FFE585 ;margin-top: 20px; margin-left: 10px;">
   <br>
@@ -48,13 +24,13 @@
 
   <br>
   <div class="d-grid gap-2 col-6 mx-auto" >
-    <a href="http://127.0.0.1:8000/sitio/data/descripcion/">  <button class="btn btn-primary" type="button" href="descripcion.html" style="background-color: rgb(253, 175, 40);border-color: rgb(253, 175, 40); font-family: 'Courier New', Courier, monospace; width: 70% ;margin-left: 15%; margin-right: 15%; margin-top: 80px;">Descripción del dataset</button></a>
+    <a href="http://127.0.0.1:8000/sitio/data/descripcion/" >  <button class="btn btn-primary" type="button" href="descripcion.html" style="background-color: rgb(253, 175, 40);border-color: rgb(253, 175, 40); font-family: 'Courier New', Courier, monospace; min-width: 70% ;margin-left: 15%; margin-right: 15%; margin-top: 80px; text-wrap: wrap; word-break: break-word;" >Descripción del dataset</button></a>
   </div>
   <div class="d-grid gap-2 col-6 mx-auto" >
-    <a href="http://127.0.0.1:8000/sitio/data/tabla/">  <button class="btn btn-primary" type="button" href="tabla.html" style="background-color: rgb(253, 175, 40);border-color: rgb(253, 175, 40); font-family: 'Courier New', Courier, monospace; width: 70% ;margin-left: 15%; margin-right: 15%; margin-top: 20px;">Link al data set ordenado en una tabla</button></a>
+    <a href="http://127.0.0.1:8000/sitio/data/tabla/">  <button class="btn btn-primary"  type="button" href="tabla.html" style="background-color: rgb(253, 175, 40);border-color: rgb(253, 175, 40); font-family: 'Courier New', Courier, monospace; min-width: 70% ;margin-left: 15%; margin-right: 15%; margin-top: 20px; word-break: break-word;" >Data set ordenado en una tabla</button></a>
   </div>
   <div class="d-grid gap-2 col-6 mx-auto" >
-  <a href="http://127.0.0.1:8000/sitio/data/top10gral/"> <button class="btn btn-primary" type="button" href="graficos.html" style="background-color: rgb(253, 175, 40);border-color: rgb(253, 175, 40); font-family: 'Courier New', Courier, monospace; width: 70% ;margin-left: 15%; margin-right: 15%; margin-top: 20px;">Link a los gráficos del dataset</button></a>
+  <a href="http://127.0.0.1:8000/sitio/data/top10gral/"> <button class="btn btn-primary" type="button" href="graficos.html" style="background-color: rgb(253, 175, 40);border-color: rgb(253, 175, 40); font-family: 'Courier New', Courier, monospace; min-width: 70% ;margin-left: 15%; margin-right: 15%; margin-top: 20px; word-break: break-word;" >Gráficos del dataset</button></a>
 </div>
 </body>
 </html>
